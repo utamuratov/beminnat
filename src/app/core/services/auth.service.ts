@@ -3,6 +3,7 @@ import { Inject, Injectable } from '@angular/core';
 import { DITokens } from '../utils/di.tokens';
 import { BaseService } from './base.service';
 import { StorageService } from './storage.service';
+import { SignInForm } from '../../domains/auth/sign-in/sign-in.component';
 
 @Injectable({
   providedIn: 'root',
@@ -16,20 +17,21 @@ export class AuthService {
     StorageService.setItem('accessToken', v);
   }
 
-  constructor(
-    private $base: BaseService,
-    @Inject(DITokens.API_ENDPOINT) private endpoint: string
-  ) {}
+  constructor(private $base: BaseService) {}
+
+  login(model: SignInForm) {
+    console.log(model);
+  }
 
   signIn(email: string, password: string) {
-    return this.$base.post(`${this.endpoint}/api/auth/signin`, {
+    return this.$base.post(`auth/signin`, {
       email,
       password,
     });
   }
 
   singUp(email: string, password: string) {
-    return this.$base.post(`${this.endpoint}/api/auth/signup`, {
+    return this.$base.post(`auth/signup`, {
       email,
       password,
     });

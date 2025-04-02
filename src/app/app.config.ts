@@ -2,6 +2,7 @@ import {
   ApplicationConfig,
   provideZoneChangeDetection,
   isDevMode,
+  importProvidersFrom,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
@@ -11,6 +12,15 @@ import { DITokens } from './core/utils/di.tokens';
 import { environment } from '../environments/environment';
 import { TranslocoHttpLoader } from './transloco-loader';
 import { provideTransloco } from '@jsverse/transloco';
+import { icons } from './icons-provider';
+import { provideNzIcons } from 'ng-zorro-antd/icon';
+import { ru_RU, provideNzI18n } from 'ng-zorro-antd/i18n';
+import { registerLocaleData } from '@angular/common';
+import ru from '@angular/common/locales/ru';
+import { FormsModule } from '@angular/forms';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+
+registerLocaleData(ru);
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -31,5 +41,10 @@ export const appConfig: ApplicationConfig = {
       },
       loader: TranslocoHttpLoader,
     }),
+    provideNzIcons(icons),
+    provideNzI18n(ru_RU),
+    importProvidersFrom(FormsModule),
+    provideAnimationsAsync(),
+    // provideHttpClient(),
   ],
 };

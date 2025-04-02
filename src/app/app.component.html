@@ -1,16 +1,1 @@
-<h1>Hello</h1>
-@if (isAuthorized) {
-  @if (user) {
-    {{ user.name }}
-    <h2>World</h2>
-    @for (item of data; track $index) {
-      @if (item) {
-        {{ item }}
-      }
-      {{ item }}
-    }
-  }
-}
-
-{{ 'hello' | transloco }}
 <router-outlet></router-outlet>
