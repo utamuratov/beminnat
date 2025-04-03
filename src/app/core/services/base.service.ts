@@ -16,20 +16,20 @@ export class BaseService {
     @Inject(DITokens.API_ENDPOINT) private endpoint: string,
   ) {}
 
-  get(url: string) {
-    return mapToResult(this.http.get(this.treatUrl(url)));
+  get<T = any>(url: string) {
+    return mapToResult(this.http.get<T>(this.treatUrl(url)));
   }
 
-  post(url: string, data: any) {
-    return mapToResult(this.http.post(this.treatUrl(url), data));
+  post<T = any>(url: string, data: any) {
+    return mapToResult(this.http.post<T>(this.treatUrl(url), data));
   }
 
-  put(url: string, data: any) {
-    return mapToResult(this.http.put(this.treatUrl(url), data));
+  put<T = any>(url: string, data: any) {
+    return mapToResult(this.http.put<T>(this.treatUrl(url), data));
   }
 
-  delete(url: string) {
-    return mapToResult(this.http.delete(this.treatUrl(url)));
+  delete<T = any>(url: string) {
+    return mapToResult(this.http.delete<T>(this.treatUrl(url)));
   }
 }
 
@@ -39,9 +39,9 @@ export class BaseService {
 //     shareReplay(1)
 //   );
 
-export function mapToResult(obs: Observable<any>) {
+export function mapToResult<T>(obs: Observable<T>) {
   return obs.pipe(
-    catchError((error) => of({ error, result: null })),
+    catchError((error) => of({ error, result: null } as T)),
     shareReplay(1),
   );
 }
