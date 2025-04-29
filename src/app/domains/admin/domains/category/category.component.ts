@@ -20,6 +20,8 @@ import { TranslocoPipe } from '@jsverse/transloco';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
+import { markAsDirty } from '../../../../core/utils/util';
 
 @Component({
   selector: 'app-category',
@@ -31,6 +33,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
     ReactiveFormsModule,
     NzFormModule,
     NzInputModule,
+    NzPopconfirmModule,
   ],
   providers: [CategoryService],
   template: `
@@ -55,9 +58,15 @@ import { NzInputModule } from 'ng-zorro-antd/input';
             <td>{{ item.name }}</td>
             <td>{{ item.description }}</td>
             <td>
-              <a>Edit</a>
+              <a (click)="handleEdit(item)">Edit</a>
               |
-              <a (click)="delete(item.id)">Delete</a>
+              <a
+                nz-popconfirm
+                nzPopconfirmTitle="Are you sure delete this task?"
+                nzPopconfirmPlacement="bottom"
+                (nzOnConfirm)="delete(item.id)"
+                >Delete</a
+              >
             </td>
           </tr>
         }
@@ -66,10 +75,10 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 
     <nz-modal
       [(nzVisible)]="isVisible"
-      nzTitle="Create"
+      [nzTitle]="(isEditing ? 'Edit Category' : 'Create Category') | transloco"
       (nzOnCancel)="handleCancel()"
-      (nzOnOk)="handleOk()"
-      [nzOkText]="'save' | transloco"
+      (nzOnOk)="submit()"
+      [nzOkText]="(isEditing ? 'save' : 'create') | transloco"
     >
       <ng-container *nzModalContent>
         <form nz-form nzLayout="vertical" [formGroup]="form">
@@ -102,12 +111,15 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 })
 export default class CategoryComponent implements OnInit {
   private $data = inject(CategoryService);
-  private $cdr = inject(ChangeDetectorRef);
   private $fb = inject(FormBuilder);
-  // data$!: Observable<CategoryResponse[]>;
   data = signal<CategoryResponse[]>([]);
 
   isVisible = false;
+
+  editingDataId: number = -1;
+  get isEditing() {
+    return this.editingDataId > 0;
+  }
 
   form = this.$fb.group({
     name: ['', Validators.required],
@@ -131,51 +143,70 @@ export default class CategoryComponent implements OnInit {
         this.data.update((prev) => {
           return prev.filter((item) => item.id !== id);
         });
-        // this.data$ = this.data$.pipe(
-        //   map((data) => {
-        //     return data.filter((item) => item.id !== id);
-        //   }),
-        // );
-        // this.$cdr.markForCheck();
       }
     });
-  }
-
-  create() {
-    //
   }
 
   handleCancel() {
     this.closeModal();
   }
 
-  handleOk() {
+  submit() {
     if (this.form.invalid) {
-      Object.entries(this.form.controls).forEach(([key, control]) => {
-        control.markAsDirty();
-        control.updateValueAndValidity();
-      });
+      markAsDirty(this.form);
       return;
     }
 
     const data = this.form.value;
+    if (this.isEditing) {
+      this.update(data);
+      return;
+    }
+
+    this.create(data);
+  }
+
+  handleEdit(item: CategoryResponse) {
+    this.editingDataId = item.id;
+    this.form.patchValue(item);
+    this.openModal();
+  }
+
+  closeModal() {
+    this.isVisible = false;
+    this.editingDataId = -1;
+    this.form.reset();
+  }
+
+  openModal() {
+    this.isVisible = true;
+  }
+
+  private create(
+    data: Partial<{ name: string | null; description: string | null }>,
+  ) {
     this.$data.createCategory(data).subscribe((res) => {
       if (res) {
         this.data.update((prev) => {
           return [...prev, res];
         });
-        this.form.reset();
+        this.closeModal();
       }
     });
-
-    this.closeModal();
   }
 
-  closeModal() {
-    this.isVisible = false;
-  }
-
-  openModal() {
-    this.isVisible = true;
+  private update(
+    data: Partial<{ name: string | null; description: string | null }>,
+  ) {
+    this.$data.updateCategory(this.editingDataId, data).subscribe((res) => {
+      if (res) {
+        const editingData = this.data().find((item) => item.id === res.id);
+        if (editingData) {
+          editingData.name = res.name;
+          editingData.description = res.description;
+        }
+        this.closeModal();
+      }
+    });
   }
 }

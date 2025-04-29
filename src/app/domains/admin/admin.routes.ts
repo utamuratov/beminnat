@@ -10,6 +10,10 @@ export default [
         path: 'category',
         loadComponent: () => import('./domains/category/category.component'),
       },
+      {
+        path: 'regions',
+        loadComponent: () => import('./domains/regions/regions.component'),
+      },
     ],
   },
 ] as Routes;
