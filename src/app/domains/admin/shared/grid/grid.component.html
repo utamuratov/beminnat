@@ -1,0 +1,79 @@
+<div class="flex justify-between items-center mb-4">
+  <h2 class="text-2xl font-bold">{{ title() | transloco }}</h2>
+  <button nz-button (click)="openModal()">Create</button>
+</div>
+
+<nz-table #basicTable [nzData]="data()">
+  <thead>
+    <tr>
+      @for (column of columns(); track $index) {
+        <th>{{ column.header | transloco }}</th>
+      }
+      <th [nzWidth]="'150px'">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (item of basicTable.data; track item) {
+      <tr>
+        @for (column of columns(); track $index) {
+          <td>
+            @let columnData = item | appDeepValue: column.field;
+            @switch (column.type) {
+              @case ('date') {
+                {{ columnData | date: 'dd.MM.yyyy HH:mm' }}
+              }
+              @case ('image') {
+                <img
+                  [src]="columnData"
+                  [alt]="columnData"
+                  [width]="50"
+                  [height]="50"
+                />
+              }
+              @default {
+                {{ columnData }}
+              }
+            }
+          </td>
+        }
+        <td>
+          <a (click)="handleEdit(item)">Edit</a>
+          |
+          <a
+            nz-popconfirm
+            nzPopconfirmTitle="Are you sure delete this task?"
+            nzPopconfirmPlacement="bottom"
+            (nzOnConfirm)="delete(item.id)"
+            >Delete</a
+          >
+        </td>
+      </tr>
+    }
+  </tbody>
+</nz-table>
+
+<nz-modal
+  [(nzVisible)]="isVisible"
+  [nzTitle]="(isEditing ? 'Edit Category' : 'Create Category') | transloco"
+  (nzOnCancel)="handleCancel()"
+  (nzOnOk)="submit()"
+  [nzOkText]="(isEditing ? 'save' : 'create') | transloco"
+>
+  <ng-container *nzModalContent>
+    <form nz-form nzLayout="vertical" [formGroup]="form">
+      <nz-form-item>
+        <nz-form-label nzFor="name">Name</nz-form-label>
+        <nz-form-control>
+          <input nz-input name="name" id="name" formControlName="name" />
+        </nz-form-control>
+      </nz-form-item>
+
+      <nz-form-item>
+        <nz-form-label nzFor="code">Code</nz-form-label>
+        <nz-form-control>
+          <input nz-input name="code" id="code" formControlName="code" />
+        </nz-form-control>
+      </nz-form-item>
+    </form>
+  </ng-container>
+</nz-modal>

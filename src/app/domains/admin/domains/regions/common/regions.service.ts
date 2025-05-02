@@ -1,21 +1,22 @@
 import { inject, Injectable } from '@angular/core';
 import { BaseService } from '../../../../../core/services/base.service';
 import { RegionRequest, RegionResponse } from './region.model';
+import { GridService } from '../../../shared/grid/common/grid.service';
 
 @Injectable()
-export class RegionsService {
+export class RegionsService extends GridService {
   private $base = inject(BaseService);
 
-  getRegions() {
+  override getAll() {
     return this.$base.get<RegionResponse[]>('./data/region.json');
   }
-  updateRegion(id: number, data: any) {
+  override update(id: number, data: any) {
     return this.$base.put<RegionResponse>(`regions/${id}`, data);
   }
-  createRegion(data: any) {
+  override create(data: any) {
     return this.$base.post<RegionResponse>('regions', data);
   }
-  deleteRegion(id: number) {
+  override delete(id: number) {
     return this.$base.delete<RegionResponse>(`regions/${id}`);
   }
 }
