@@ -38,6 +38,10 @@ import { IColumn } from '../../shared/grid/common/column.model';
     // NzFormModule,
     // NzInputModule,
     // NzPopconfirmModule,
+
+    ReactiveFormsModule,
+    NzFormModule,
+    NzInputModule,
   ],
   providers: [
     CategoryService,
@@ -47,7 +51,35 @@ import { IColumn } from '../../shared/grid/common/column.model';
     },
   ],
   template: `
-    <app-grid [title]="'Categories'" [columns]="columns"></app-grid>
+    <app-grid
+      [title]="'Categories'"
+      [columns]="columns"
+      [form]="form"
+      [formTemplate]="formTemplate"
+    ></app-grid>
+
+    <ng-template #formTemplate>
+      <form nz-form nzLayout="vertical" [formGroup]="form">
+        <nz-form-item>
+          <nz-form-label nzFor="name">Name</nz-form-label>
+          <nz-form-control>
+            <input nz-input name="name" id="name" formControlName="name" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzFor="description">Description</nz-form-label>
+          <nz-form-control>
+            <input
+              nz-input
+              name="description"
+              id="description"
+              formControlName="description"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </ng-template>
   `,
   styleUrl: './category.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -77,4 +109,10 @@ export default class CategoryComponent {
       type: 'image',
     },
   ];
+
+  private $fb = inject(FormBuilder);
+  form = this.$fb.group({
+    name: ['', Validators.required],
+    description: ['', Validators.required],
+  });
 }

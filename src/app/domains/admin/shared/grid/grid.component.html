@@ -30,6 +30,16 @@
                   [height]="50"
                 />
               }
+              @case ('template') {
+                @if (columnTemplate(); as columnTemplate) {
+                  <ng-container
+                    *ngTemplateOutlet="
+                      columnTemplate;
+                      context: { $implicit: item, field: column.field }
+                    "
+                  ></ng-container>
+                }
+              }
               @default {
                 {{ columnData }}
               }
@@ -60,20 +70,6 @@
   [nzOkText]="(isEditing ? 'save' : 'create') | transloco"
 >
   <ng-container *nzModalContent>
-    <form nz-form nzLayout="vertical" [formGroup]="form">
-      <nz-form-item>
-        <nz-form-label nzFor="name">Name</nz-form-label>
-        <nz-form-control>
-          <input nz-input name="name" id="name" formControlName="name" />
-        </nz-form-control>
-      </nz-form-item>
-
-      <nz-form-item>
-        <nz-form-label nzFor="code">Code</nz-form-label>
-        <nz-form-control>
-          <input nz-input name="code" id="code" formControlName="code" />
-        </nz-form-control>
-      </nz-form-item>
-    </form>
+    <ng-container [ngTemplateOutlet]="formTemplate()"></ng-container>
   </ng-container>
 </nz-modal>

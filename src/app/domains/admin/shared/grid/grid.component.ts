@@ -4,9 +4,16 @@ import {
   inject,
   input,
   OnInit,
+  output,
   signal,
+  TemplateRef,
 } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  ReactiveFormsModule,
+  UntypedFormGroup,
+  Validators,
+} from '@angular/forms';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzFormModule } from 'ng-zorro-antd/form';
@@ -17,7 +24,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { markAsDirty } from '../../../../core/utils/util';
 import { GridService } from './common/grid.service';
 import { IColumn } from './common/column.model';
-import { DatePipe } from '@angular/common';
+import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import { DeepValuePipe } from './common/deep-value.pipe';
 
 @Component({
@@ -33,6 +40,7 @@ import { DeepValuePipe } from './common/deep-value.pipe';
     NzPopconfirmModule,
     DatePipe,
     DeepValuePipe,
+    NgTemplateOutlet,
   ],
   templateUrl: './grid.component.html',
   styleUrl: './grid.component.css',
@@ -41,6 +49,10 @@ import { DeepValuePipe } from './common/deep-value.pipe';
 export class GridComponent implements OnInit {
   title = input.required<string>();
   columns = input.required<IColumn[]>();
+  columnTemplate = input<TemplateRef<any>>();
+  formTemplate = input.required<TemplateRef<any>>();
+  form = input.required<UntypedFormGroup>();
+  navigated = output<any>();
 
   private $data = inject(GridService);
   private $fb = inject(FormBuilder);
@@ -52,11 +64,6 @@ export class GridComponent implements OnInit {
   get isEditing() {
     return this.editingDataId > 0;
   }
-
-  form = this.$fb.group({
-    name: ['', Validators.required],
-    code: ['', Validators.required],
-  });
 
   ngOnInit() {
     this.getAll();
@@ -83,12 +90,12 @@ export class GridComponent implements OnInit {
   }
 
   submit() {
-    if (this.form.invalid) {
-      markAsDirty(this.form);
+    if (this.form().invalid) {
+      markAsDirty(this.form());
       return;
     }
 
-    const data = this.form.value;
+    const data = this.form().value;
     if (this.isEditing) {
       this.update(data);
       return;
@@ -99,14 +106,14 @@ export class GridComponent implements OnInit {
 
   handleEdit(item: any) {
     this.editingDataId = item.id;
-    this.form.patchValue(item);
+    this.form().patchValue(item);
     this.openModal();
   }
 
   closeModal() {
     this.isVisible = false;
     this.editingDataId = -1;
-    this.form.reset();
+    this.form().reset();
   }
 
   openModal() {
