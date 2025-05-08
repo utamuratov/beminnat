@@ -13,10 +13,12 @@ import { JsonPipe, NgTemplateOutlet } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { IFormField } from '../../shared/dynamic-form/common/form-field.model';
+import { DynamicFormComponent } from '../../shared/dynamic-form/dynamic-form.component';
 
 @Component({
   selector: 'app-regions',
-  imports: [GridComponent, ReactiveFormsModule, NzFormModule, NzInputModule],
+  imports: [GridComponent, DynamicFormComponent],
   template: `
     <app-grid
       [title]="'Regions'"
@@ -24,7 +26,6 @@ import { NzInputModule } from 'ng-zorro-antd/input';
       [columnTemplate]="columnTemplate"
       [form]="form"
       [formTemplate]="formTemplate"
-      (navigated)="navigated($event)"
     ></app-grid>
 
     <ng-template #columnTemplate let-data let-field="field">
@@ -45,33 +46,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
     </ng-template>
 
     <ng-template #formTemplate>
-      <form nz-form nzLayout="vertical" [formGroup]="form">
-        <nz-form-item>
-          <nz-form-label nzFor="name">Name</nz-form-label>
-          <nz-form-control>
-            <input nz-input name="name" id="name" formControlName="name" />
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-label nzFor="code">Code</nz-form-label>
-          <nz-form-control>
-            <input nz-input name="code" id="code" formControlName="code" />
-          </nz-form-control>
-        </nz-form-item>
-
-        <nz-form-item>
-          <nz-form-label nzFor="country">Country</nz-form-label>
-          <nz-form-control>
-            <input
-              nz-input
-              name="country"
-              id="country"
-              formControlName="country"
-            />
-          </nz-form-control>
-        </nz-form-item>
-      </form>
+      <app-dynamic-form [form]="form" [fields]="fields"></app-dynamic-form>
     </ng-template>
   `,
   styleUrl: './regions.component.css',
@@ -115,8 +90,49 @@ export default class RegionsComponent {
   form = this.$fb.group({
     name: ['', Validators.required],
     code: ['', Validators.required],
-    country: ['', Validators.required],
+    countryId: ['', Validators.required],
   });
+
+  fields: IFormField[] = [
+    {
+      fieldsGroup: {
+        class: 'flex gap-4',
+        fields: [
+          {
+            field: 'name',
+            label: 'Name',
+            type: 'input',
+            class: 'w-1/2',
+          },
+          {
+            field: 'code',
+            label: 'Code',
+            type: 'input',
+            class: 'w-full',
+          },
+        ],
+      },
+    },
+    {
+      field: 'countryId',
+      label: 'Country',
+      type: 'select',
+      options: [
+        {
+          label: 'Uzbekistan',
+          value: 'uz',
+        },
+        {
+          label: 'Kazakhstan',
+          value: 'kz',
+        },
+        {
+          label: 'Kyrgyzstan',
+          value: 'kg',
+        },
+      ],
+    },
+  ];
 
   navigated(event: any) {
     console.log(event);

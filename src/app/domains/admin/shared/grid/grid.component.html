@@ -64,7 +64,7 @@
 
 <nz-modal
   [(nzVisible)]="isVisible"
-  [nzTitle]="(isEditing ? 'Edit Category' : 'Create Category') | transloco"
+  [nzTitle]="(isEditing ? 'Edit' : 'Create') | transloco"
   (nzOnCancel)="handleCancel()"
   (nzOnOk)="submit()"
   [nzOkText]="(isEditing ? 'save' : 'create') | transloco"

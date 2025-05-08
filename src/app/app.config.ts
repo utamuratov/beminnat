@@ -19,6 +19,8 @@ import { registerLocaleData } from '@angular/common';
 import ru from '@angular/common/locales/ru';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { FormlyModule } from '@ngx-formly/core';
+import { FormlyNgZorroAntdModule } from '@ngx-formly/ng-zorro-antd';
 
 registerLocaleData(ru);
 
@@ -43,7 +45,7 @@ export const appConfig: ApplicationConfig = {
     }),
     provideNzIcons(icons),
     provideNzI18n(ru_RU),
-    importProvidersFrom(FormsModule),
+    importProvidersFrom([FormlyModule.forRoot(), FormlyNgZorroAntdModule]),
     provideAnimationsAsync(),
     // provideHttpClient(),
   ],

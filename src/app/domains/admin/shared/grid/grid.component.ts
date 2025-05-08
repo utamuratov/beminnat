@@ -52,10 +52,8 @@ export class GridComponent implements OnInit {
   columnTemplate = input<TemplateRef<any>>();
   formTemplate = input.required<TemplateRef<any>>();
   form = input.required<UntypedFormGroup>();
-  navigated = output<any>();
 
   private $data = inject(GridService);
-  private $fb = inject(FormBuilder);
   data = signal<any[]>([]);
 
   isVisible = false;
@@ -120,9 +118,7 @@ export class GridComponent implements OnInit {
     this.isVisible = true;
   }
 
-  private create(
-    data: Partial<{ name: string | null; description: string | null }>,
-  ) {
+  private create(data: any) {
     this.$data.create(data).subscribe((res) => {
       if (res) {
         this.data.update((prev) => {
@@ -133,9 +129,7 @@ export class GridComponent implements OnInit {
     });
   }
 
-  private update(
-    data: Partial<{ name: string | null; description: string | null }>,
-  ) {
+  private update(data: any) {
     this.$data.update(this.editingDataId, data).subscribe((res) => {
       if (res) {
         const editingData = this.data().find((item) => item.id === res.id);

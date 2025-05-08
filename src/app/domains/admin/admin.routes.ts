@@ -14,6 +14,10 @@ export default [
         path: 'regions',
         loadComponent: () => import('./domains/regions/regions.component'),
       },
+      {
+        path: 'district',
+        loadComponent: () => import('./domains/district/district.component'),
+      },
     ],
   },
 ] as Routes;

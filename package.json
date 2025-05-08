@@ -19,6 +19,8 @@
     "@angular/platform-browser-dynamic": "^19.1.0",
     "@angular/router": "^19.1.0",
     "@jsverse/transloco": "^7.5.1",
+    "@ngx-formly/core": "^6.3.12",
+    "@ngx-formly/ng-zorro-antd": "^6.3.12",
     "@tailwindcss/postcss": "^4.1.0",
     "ng-zorro-antd": "^19.2.1",
     "postcss": "^8.5.3",
