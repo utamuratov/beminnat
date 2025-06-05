@@ -21,6 +21,7 @@ import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyNgZorroAntdModule } from '@ngx-formly/ng-zorro-antd';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 registerLocaleData(ru);
 
@@ -47,6 +48,8 @@ export const appConfig: ApplicationConfig = {
     provideNzI18n(ru_RU),
     importProvidersFrom([FormlyModule.forRoot(), FormlyNgZorroAntdModule]),
     provideAnimationsAsync(),
+
+    NzModalService,
     // provideHttpClient(),
   ],
 };
