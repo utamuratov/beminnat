@@ -1,6 +1,10 @@
 <div class="flex justify-between items-center mb-4">
   <h2 class="text-2xl font-bold">{{ title() | transloco }}</h2>
-  <button nz-button (click)="openModal()">Create</button>
+
+  <div class="flex gap-2">
+    <ng-content select="[titleRight]"></ng-content>
+    <button nz-button (click)="openModal()">Create</button>
+  </div>
 </div>
 
 <nz-table #basicTable [nzData]="data()">

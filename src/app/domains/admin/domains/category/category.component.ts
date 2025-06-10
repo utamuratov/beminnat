@@ -25,6 +25,8 @@ import { markAsDirty } from '../../../../core/utils/util';
 import { GridComponent } from '../../shared/grid/grid.component';
 import { GridService } from '../../shared/grid/common/grid.service';
 import { IColumn } from '../../shared/grid/common/column.model';
+import { debounceTime } from '../../../../shared/decorators/debounce-time.decorator';
+import { DebounceTimeDirective } from '../../../../shared/directives/debounce-time.directive';
 
 @Component({
   selector: 'app-category',
@@ -42,6 +44,7 @@ import { IColumn } from '../../shared/grid/common/column.model';
     ReactiveFormsModule,
     NzFormModule,
     NzInputModule,
+    DebounceTimeDirective,
   ],
   providers: [
     CategoryService,
@@ -56,7 +59,17 @@ import { IColumn } from '../../shared/grid/common/column.model';
       [columns]="columns"
       [form]="form"
       [formTemplate]="formTemplate"
-    ></app-grid>
+    >
+      <div titleRight>
+        <input
+          title="Title"
+          nz-input
+          debounceTime
+          placeholder="search..."
+          (search)="search($event)"
+        />
+      </div>
+    </app-grid>
 
     <ng-template #formTemplate>
       <form nz-form nzLayout="vertical" [formGroup]="form">
@@ -115,4 +128,15 @@ export default class CategoryComponent {
     name: ['', Validators.required],
     description: ['', Validators.required],
   });
+
+  // @debounceTime(1000)
+  search(e: any) {
+    console.log('', e);
+    this.load();
+  }
+
+  // FETCH DATA FROM SERVER
+  load() {
+    console.log('load data');
+  }
 }

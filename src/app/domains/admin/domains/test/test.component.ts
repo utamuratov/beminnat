@@ -1,44 +1,30 @@
-import { NgTemplateOutlet } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalModule } from 'ng-zorro-antd/modal';
 import { Confirmable } from '../../../../shared/decorators/confirmable.decorator';
-import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
 import { CategoryService } from '../category/common/category.service';
 import { Notify } from '../../../../shared/decorators/notify.decorator';
+import {
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { NzFormModule } from 'ng-zorro-antd/form';
+import { NzInputModule } from 'ng-zorro-antd/input';
 
 @Component({
   selector: 'app-test',
-  imports: [NgTemplateOutlet, NzButtonModule],
+  imports: [
+    NzButtonModule,
+    NzModalModule,
+    ReactiveFormsModule,
+    NzFormModule,
+    NzInputModule,
+  ],
   providers: [CategoryService],
   template: `
-    <!-- <ng-container
-      *ngTemplateOutlet="menu; context: { $implicit: data }"
-    ></ng-container> -->
-
-    <!-- <ng-template #menu let-menuData>
-      <ul class="pl-4">
-        @for (item of menuData; track $index) {
-          <li>
-            {{ item.name }}
-
-            @if (item.children && item.children.length > 0) {
-              <ng-container
-                *ngTemplateOutlet="menu; context: { $implicit: item.children }"
-              ></ng-container>
-            }
-          </li>
-        }
-      </ul>
-    </ng-template> -->
-
+    <button nz-button (click)="openAddDialog()">Qo'shish</button>
     <table class="w-full">
       <thead>
         <tr>
@@ -63,11 +49,57 @@ import { Notify } from '../../../../shared/decorators/notify.decorator';
         <button (click)="submit()">Submit</button>
       </tbody>
     </table>
+
+    <nz-modal
+      [(nzVisible)]="isVisible"
+      [nzTitle]="'Create'"
+      [nzContent]="modalContent"
+      [nzFooter]="modalFooter"
+      (nzOnCancel)="close()"
+    >
+      <ng-template #modalContent>
+        <form [formGroup]="form">
+          <nz-form-item>
+            <nz-form-label [nzSpan]="24">Name</nz-form-label>
+            <nz-form-control
+              [nzSpan]="24"
+              nzErrorTip="Please input your username!"
+            >
+              <input
+                nz-input
+                formControlName="name"
+                placeholder="input placeholder"
+              />
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-label [nzSpan]="24">Description</nz-form-label>
+            <nz-form-control
+              [nzSpan]="24"
+              nzErrorTip="Please input your username!"
+            >
+              <input
+                nz-input
+                formControlName="description"
+                placeholder="input placeholder"
+              />
+            </nz-form-control>
+          </nz-form-item>
+        </form>
+      </ng-template>
+
+      <ng-template #modalFooter>
+        <button nz-button nzType="default" (click)="close()">Close</button>
+        <button nz-button nzType="primary" (click)="save()">Submit</button>
+      </ng-template>
+    </nz-modal>
   `,
   styleUrl: './test.component.css',
   changeDetection: ChangeDetectionStrategy.Default,
 })
 export default class TestComponent {
+  //#region OLD CODE
   users = signal([
     {
       id: 1,
@@ -151,5 +183,25 @@ export default class TestComponent {
   @Confirmable()
   delete(user: any) {
     this.users.update(() => this.users().filter((u) => u.id !== user.id));
+  }
+  //#endregion
+
+  isVisible = false;
+
+  form = new FormGroup({
+    name: new FormControl(''),
+    description: new FormControl(''),
+  });
+
+  save() {
+    console.log(this.form.value);
+  }
+
+  openAddDialog() {
+    this.isVisible = true;
+  }
+
+  close() {
+    this.isVisible = false;
   }
 }
