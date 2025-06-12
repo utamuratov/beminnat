@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { Confirmable } from '../../../../shared/decorators/confirmable.decorator';
@@ -12,6 +17,11 @@ import {
 } from '@angular/forms';
 import { NzFormModule } from 'ng-zorro-antd/form';
 import { NzInputModule } from 'ng-zorro-antd/input';
+import { AsyncClickDirective } from '../../../../shared/directives/async-click.directive';
+import { of, tap } from 'rxjs';
+import { ChildComponent } from './child/child.component';
+import { MyButtonComponent } from './my-button/my-button.component';
+import { ExternalLinkComponent } from './external-link/external-link.component';
 
 @Component({
   selector: 'app-test',
@@ -21,9 +31,19 @@ import { NzInputModule } from 'ng-zorro-antd/input';
     ReactiveFormsModule,
     NzFormModule,
     NzInputModule,
+
+    AsyncClickDirective,
+    ChildComponent,
+    MyButtonComponent,
+    ExternalLinkComponent,
   ],
   providers: [CategoryService],
   template: `
+    <button my-button>Click me</button>
+    <a href="https://kun.uz">Kun uz</a>
+    <button mat-button></button>
+    <app-child [mySecondClass]="'my-second-class'"></app-child>
+
     <button nz-button (click)="openAddDialog()">Qo'shish</button>
     <table class="w-full">
       <thead>
@@ -91,7 +111,9 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 
       <ng-template #modalFooter>
         <button nz-button nzType="default" (click)="close()">Close</button>
-        <button nz-button nzType="primary" (click)="save()">Submit</button>
+        <button nz-button nzType="primary" [asyncClick]="save.bind(this)">
+          Submit
+        </button>
       </ng-template>
     </nz-modal>
   `,
@@ -189,12 +211,22 @@ export default class TestComponent {
   isVisible = false;
 
   form = new FormGroup({
-    name: new FormControl(''),
+    name: new FormControl('', [Validators.required]),
     description: new FormControl(''),
   });
 
+  $data = inject(CategoryService);
+
   save() {
-    console.log(this.form.value);
+    if (this.form.invalid) {
+      return of();
+    }
+
+    return this.$data.create(this.form.value).pipe(
+      tap(() => {
+        console.log('nimadir');
+      }),
+    );
   }
 
   openAddDialog() {
