@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AdminComponent } from './admin.component';
+import { VsComponent } from './domains/vs/vs.component';
 
 export default [
   {
@@ -21,6 +22,11 @@ export default [
       {
         path: 'test',
         loadComponent: () => import('./domains/test/test.component'),
+      },
+      {
+        path: 'vs',
+        loadChildren: () =>
+          import('./domains/vs/vs.module').then((m) => m.VsModule),
       },
     ],
   },
