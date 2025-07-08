@@ -28,6 +28,11 @@ export default [
         loadChildren: () =>
           import('./domains/vs/vs.module').then((m) => m.VsModule),
       },
+      {
+        path: 'typed-form',
+        loadComponent: () =>
+          import('./domains/typed-form/typed-form.component'),
+      },
     ],
   },
 ] as Routes;
