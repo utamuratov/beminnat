@@ -33,6 +33,10 @@ export default [
         loadComponent: () =>
           import('./domains/typed-form/typed-form.component'),
       },
+      {
+        path: 'signal',
+        loadComponent: () => import('./domains/signal/signal.component'),
+      },
     ],
   },
 ] as Routes;
