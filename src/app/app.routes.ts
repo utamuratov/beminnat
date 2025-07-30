@@ -10,6 +10,10 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'wrappers',
+    loadComponent: () => import('./domains/client/wrappers/wrappers.component'),
+  },
+  {
     path: 'admin',
     loadChildren: () => import('./domains/admin/admin.routes'),
   },

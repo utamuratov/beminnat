@@ -1,14 +1,6 @@
 import { JsonPipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef,
-  Component,
-  inject,
-} from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
   FormsModule,
   NonNullableFormBuilder,
   ReactiveFormsModule,
@@ -24,7 +16,7 @@ export interface SignInForm {
 
 @Component({
   selector: 'app-sign-in',
-  imports: [FormsModule, ReactiveFormsModule, JsonPipe, ErrorComponent],
+  imports: [FormsModule, ReactiveFormsModule, ErrorComponent],
   template: `
     <form
       [formGroup]="form"

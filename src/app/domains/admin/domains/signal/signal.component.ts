@@ -1,30 +1,14 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzInputModule } from 'ng-zorro-antd/input';
-import { FilterNamesPipe } from './filter-names.pipe';
 import { FormsModule } from '@angular/forms';
 import { CategoryService } from '../category/common/category.service';
-import { AsyncPipe } from '@angular/common';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-signal',
-  imports: [
-    NzButtonModule,
-    NzInputModule,
-    FilterNamesPipe,
-    AsyncPipe,
-    FormsModule,
-    RouterLink,
-  ],
+  imports: [NzButtonModule, NzInputModule, FormsModule, RouterLink],
   providers: [CategoryService],
   template: `
     <p class="text-xl">SIGNAL</p>
