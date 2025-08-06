@@ -22,6 +22,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { FormlyModule } from '@ngx-formly/core';
 import { FormlyNgZorroAntdModule } from '@ngx-formly/ng-zorro-antd';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { BetterMessageService } from './core/services/better-message.service';
 
 registerLocaleData(ru);
 
@@ -33,6 +35,10 @@ export const appConfig: ApplicationConfig = {
     {
       provide: DITokens.API_ENDPOINT,
       useValue: environment.endpoint,
+    },
+    {
+      provide: NzMessageService,
+      useClass: BetterMessageService,
     },
     provideTransloco({
       config: {

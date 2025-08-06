@@ -1,5 +1,6 @@
 {
     "hello": "Salom",
     "categories": "Kategoriyalar",
-    "save": "Saqlash"
+    "save": "Saqlash",
+    "moodSuccessfullyFetched": "Kayfiyat yuklab kelindi!"
 }

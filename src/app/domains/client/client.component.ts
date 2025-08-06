@@ -1,7 +1,7 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
-  computed,
   inject,
   linkedSignal,
   OnInit,
@@ -10,10 +10,12 @@ import {
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { BaseService } from '../../core/services/base.service';
 import { DITokens } from '../../core/utils/di.tokens';
+import { NzMessageService } from 'ng-zorro-antd/message';
+import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
 
 @Component({
   selector: 'app-client',
-  imports: [NzButtonModule],
+  imports: [NzButtonModule, TranslocoModule],
   providers: [
     BaseService,
     {
@@ -21,7 +23,7 @@ import { DITokens } from '../../core/utils/di.tokens';
       useValue: 'http://localhost:4200',
     },
   ],
-  template: `<p>Mood types:</p>
+  template: `<p>{{ 'Mood types:' | transloco }}</p>
     <div class="flex gap-2">
       @for (m of mood(); track $index) {
         <button nz-button (click)="chooseMood(m)">
@@ -41,10 +43,18 @@ export class ClientComponent implements OnInit {
   myMood = linkedSignal(() => this.mood()[0]);
 
   private $base = inject(BaseService);
+  private $message = inject(NzMessageService);
+  private $cdr = inject(ChangeDetectorRef);
+  private $transloco = inject(TranslocoService);
 
   ngOnInit(): void {
-    this.$base.get('data/mood.json').subscribe((mood) => {
-      this.mood.set(mood);
+    this.$transloco.langChanges$.subscribe(() => {
+      this.$base.get('data/mood.json').subscribe((mood) => {
+        this.mood.set(mood);
+        this.$message.success('moodSuccessfullyFetched');
+        this.$message.warning('moodWarningFetched');
+        this.$cdr.markForCheck();
+      });
     });
   }
 

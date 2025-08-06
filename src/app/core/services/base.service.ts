@@ -42,6 +42,6 @@ export class BaseService {
 export function mapToResult<T>(obs: Observable<T>) {
   return obs.pipe(
     catchError((error) => of({ error, result: null } as T)),
-    shareReplay(1),
+    // shareReplay(1),
   );
 }

@@ -14,6 +14,10 @@ export const routes: Routes = [
     loadComponent: () => import('./domains/client/wrappers/wrappers.component'),
   },
   {
+    path: 'rxjs',
+    loadComponent: () => import('./domains/client/rxjs/rxjs.component'),
+  },
+  {
     path: 'admin',
     loadChildren: () => import('./domains/admin/admin.routes'),
   },
